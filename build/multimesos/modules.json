@@ -1,0 +1,15 @@
+{
+  "libraries": [
+    {
+      "file": "/home/erin/project-223b/modules/build/.libs/libmultimesos.so",
+      "modules": [
+        {
+          "name": "org_apache_mesos_MultiMesosContender"
+        },
+        {
+          "name": "org_apache_mesos_MultiMesosDetector"
+        }
+      ]
+    }
+  ]
+}

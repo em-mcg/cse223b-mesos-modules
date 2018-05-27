@@ -1,0 +1,15 @@
+{
+  "libraries": [
+    {
+      "file": "@abs_top_builddir@/.libs/libmultimesos.@LIB_EXT@",
+      "modules": [
+        {
+          "name": "org_apache_mesos_MultiMesosContender"
+        },
+        {
+          "name": "org_apache_mesos_MultiMesosDetector"
+        }
+      ]
+    }
+  ]
+}

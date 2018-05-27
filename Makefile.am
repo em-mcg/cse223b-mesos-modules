@@ -15,7 +15,7 @@
 # limitations under the License
 
 AUTOMAKE_OPTIONS = subdir-objects
-ACLOCAL_AMFLAGS = -I m4
+ACLOCAL_AMFLAGS = -I m4 -I
 
 # We want to install modules in mesos directory.
 pkglibdir = $(libdir)/mesos
@@ -24,7 +24,7 @@ pkglibdir = $(libdir)/mesos
 pkglib_LTLIBRARIES =
 
 # Add compiler and linker flags for pthreads.
-AM_CXXFLAGS = $(PTHREAD_CFLAGS)
+AM_CXXFLAGS = $(PTHREAD_CFLAGS) 
 AM_LIBS = $(PTHREAD_LIBS)
 
 # Setup CPPFLAGS that are used for most source files.
@@ -39,10 +39,21 @@ libtestauthentication_la_SOURCES = authentication/test_authentication_modules.cp
 				   authentication/cram_md5/auxprop.cpp
 libtestauthentication_la_LDFLAGS = -release $(PACKAGE_VERSION) -shared $(MESOS_LDFLAGS)
 
+
+
+pkglib_LTLIBRARIES += libmultimesos.la
+libmultimesos_la_SOURCES = multimesos/multi_master_contender_module.cpp \
+				   multimesos/multi_master_detector_module.cpp \
+				   multimesos/commons.cpp \
+				   multimesos/multi_mesos_modules.cpp
+libmultimesos_la_LDFLAGS = -release $(PACKAGE_VERSION) -shared $(MESOS_LDFLAGS)
+# libmultimesos_la_CPPFLAGS = -I/home/erin/project-223b/mesos/build/src
+
+# Doesn't build properly
 # Library containing test CPU and memory isolator modules.
-pkglib_LTLIBRARIES += libtestisolator.la
-libtestisolator_la_SOURCES = isolator/test_isolator_module.cpp
-libtestisolator_la_LDFLAGS = -release $(PACKAGE_VERSION) -shared $(MESOS_LDFLAGS)
+# pkglib_LTLIBRARIES += libtestisolator.la
+# libtestisolator_la_SOURCES = isolator/test_isolator_module.cpp
+# libtestisolator_la_LDFLAGS = -release $(PACKAGE_VERSION) -shared $(MESOS_LDFLAGS)
 
 # Library containing test hook module.
 pkglib_LTLIBRARIES += libtesthook.la

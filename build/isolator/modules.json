@@ -1,0 +1,15 @@
+{
+  "libraries": [
+    {
+      "file": "/home/erin/project-223b/modules/build/.libs/libtestisolator.so",
+      "modules": [
+        {
+          "name": "org_apache_mesos_TestCpuIsolator"
+        },
+        {
+          "name": "org_apache_mesos_TestMemIsolator"
+        }
+      ]
+    }
+  ]
+}
