@@ -1,15 +1,20 @@
 {
-  "libraries": [
-    {
-      "file": "/home/erin/project-223b/modules/build/.libs/libmultimesos.so",
-      "modules": [
-        {
-          "name": "org_apache_mesos_MultiMesosContender"
-        },
-        {
-          "name": "org_apache_mesos_MultiMesosDetector"
-        }
-      ]
-    }
-  ]
+  "libraries": [{
+    "file": "/home/erin/project-223b/modules/build/.libs/libmultimesos.so",
+    "modules": [{
+        "name": "org_apache_mesos_MultiMesosContender",
+        "parameters": [{
+          "key": "leaders",
+          "value": "http://localhost:5050,localhost:6060"
+        }]
+      },
+      {
+        "name": "org_apache_mesos_MultiMesosDetector",
+        "parameters": [{
+          "key": "leaders",
+          "value": "http://localhost:5050,localhost:6060"
+        }]
+      }
+    ]
+  }]
 }

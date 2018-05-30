@@ -27,6 +27,8 @@
 
 #include "multi_master_contender_module.hpp"
 
+#include "http_endpoint.hpp"
+
 #include <mesos/master/contender.hpp>
 
 #include <process/future.hpp>
@@ -37,11 +39,32 @@ using namespace mesos::master::contender;
 
 namespace multimesos {
 
+
+MultiMasterContender::MultiMasterContender()
+: initialized(false),
+  promise(nullptr),
+  masterInfo(nullptr),
+  infoEndpoint(nullptr),
+  leaderUrls(nullptr)
+  {}
+
+MultiMasterContender::MultiMasterContender(http::URL* urls)
+: initialized(false),
+  promise(nullptr),
+  masterInfo(nullptr),
+  infoEndpoint(nullptr),
+  leaderUrls(urls)
+  {}
+
 MultiMasterContender::~MultiMasterContender()
 {
   if (promise != nullptr) {
     promise->set(Nothing()); // Leadership lost.
     delete promise;
+  }
+
+  if (infoEndpoint != nullptr) {
+	delete infoEndpoint;
   }
 }
 
@@ -51,13 +74,20 @@ void MultiMasterContender::initialize(const MasterInfo& masterInfo)
   // We don't really need to store the master in this basic
   // implementation so we just restore an 'initialized' flag to make
   // sure it is called.
+
+  // set up master info endpoint
+  this->infoEndpoint = new ContenderHttp(masterInfo);
+
   this->masterInfo = &masterInfo;
   initialized = true;
+
+  LOG(INFO) << "Initialized MasterContender at " << this->contenderAddress();
 }
 
 
 Future<Future<Nothing>> MultiMasterContender::contend()
 {
+  LOG(INFO) << "Contending for leadership";
   if (!initialized) {
     return Failure("Initialize the contender first");
   }
@@ -73,6 +103,11 @@ Future<Future<Nothing>> MultiMasterContender::contend()
   // until we 'withdraw'.
   promise = new Promise<Nothing>();
   return promise->future();
+}
+
+
+std::string MultiMasterContender::contenderAddress() {
+	return this->masterInfo->hostname() + ":" + std::to_string(this->masterInfo->port());
 }
 
 } // namespace multimesos {

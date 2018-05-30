@@ -25,10 +25,15 @@
 
 #include <process/future.hpp>
 
+#include <process/process.hpp>
+
 #include <stout/option.hpp>
 
 using namespace mesos;
+using namespace process;
 using namespace mesos::master::detector;
+
+using std::set;
 
 namespace multimesos {
 
@@ -46,6 +51,8 @@ public:
   // unnecessary to call 'appoint()' separately.
   explicit MultiMasterDetector(const MasterInfo& leader);
 
+  explicit MultiMasterDetector(http::URL* urls);
+
   // Same as above but takes UPID as the parameter.
   explicit MultiMasterDetector(const process::UPID& leader);
 
@@ -62,6 +69,36 @@ public:
 
 private:
   MultiMasterDetectorProcess* process;
+};
+
+
+class MultiMasterDetectorProcess
+  : public Process<MultiMasterDetectorProcess>
+{
+public:
+  MultiMasterDetectorProcess();
+
+  MultiMasterDetectorProcess(http::URL* urls);
+
+  explicit MultiMasterDetectorProcess(const MasterInfo& _leader);
+
+  ~MultiMasterDetectorProcess();
+
+  void appoint(const Option<MasterInfo>& leader_);
+
+  Future<Option<MasterInfo>> detect(
+      const Option<MasterInfo>& previous = None());
+
+  //void getMasterInfo(std::string master);
+  void getMasterInfo(http::URL url);
+  static void parseMasterInfoResponse(const Future<http::Response>& res);
+
+private:
+  void discard(const Future<Option<MasterInfo>>& future);
+
+  Option<MasterInfo> leader; // The appointed master.
+  set<Promise<Option<MasterInfo>>*> promises;
+  http::URL *leaderUrls;
 };
 
 } // namespace multimesos

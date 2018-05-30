@@ -993,8 +993,26 @@ multimesos/multi_master_detector_module.lo: \
  /usr/local/include/stout/synchronized.hpp \
  /usr/include/c++/5/condition_variable /usr/include/c++/5/chrono \
  /usr/include/c++/5/ratio /usr/include/c++/5/bits/parse_numbers.h \
- /usr/include/c++/5/mutex ../multimesos/commons.hpp \
- /usr/local/include/mesos/master/contender.hpp \
+ /usr/include/c++/5/mutex /usr/local/include/process/process.hpp \
+ /usr/include/c++/5/queue /usr/include/c++/5/bits/stl_queue.h \
+ /usr/local/include/process/authenticator.hpp \
+ /usr/local/include/process/http.hpp \
+ /usr/local/include/process/socket.hpp \
+ /usr/include/x86_64-linux-gnu/sys/wait.h \
+ /usr/local/include/stout/json.hpp /usr/local/include/picojson.h \
+ /usr/local/include/stout/foreach.hpp \
+ /usr/local/include/stout/jsonify.hpp \
+ /usr/local/include/process/event.hpp \
+ /usr/local/include/process/message.hpp \
+ /usr/local/include/process/filter.hpp \
+ /usr/local/include/process/firewall.hpp \
+ /usr/local/include/stout/hashset.hpp /usr/local/include/process/mime.hpp \
+ ../multimesos/http_endpoint.hpp /usr/local/include/process/protobuf.hpp \
+ /usr/local/include/process/defer.hpp \
+ /usr/local/include/process/deferred.hpp \
+ /usr/local/include/process/dispatch.hpp \
+ /usr/local/include/process/executor.hpp \
+ /usr/local/include/process/id.hpp \
  /usr/local/include/mesos/type_utils.hpp \
  /usr/local/include/stout/uuid.hpp \
  /usr/include/boost/uuid/random_generator.hpp \
@@ -1134,25 +1152,8 @@ multimesos/multi_master_detector_module.lo: \
  /usr/include/boost/smart_ptr/detail/operator_bool.hpp \
  /usr/include/boost/uuid/string_generator.hpp \
  /usr/include/boost/uuid/uuid_io.hpp /usr/include/boost/io/ios_state.hpp \
- /usr/include/boost/io_fwd.hpp /usr/local/include/process/defer.hpp \
- /usr/local/include/process/deferred.hpp \
- /usr/local/include/process/dispatch.hpp \
- /usr/local/include/process/process.hpp /usr/include/c++/5/queue \
- /usr/include/c++/5/bits/stl_queue.h \
- /usr/local/include/process/authenticator.hpp \
- /usr/local/include/process/http.hpp \
- /usr/local/include/process/socket.hpp \
- /usr/include/x86_64-linux-gnu/sys/wait.h \
- /usr/local/include/stout/json.hpp /usr/local/include/picojson.h \
- /usr/local/include/stout/foreach.hpp \
- /usr/local/include/stout/jsonify.hpp \
- /usr/local/include/process/event.hpp \
- /usr/local/include/process/message.hpp \
- /usr/local/include/process/filter.hpp \
- /usr/local/include/process/firewall.hpp \
- /usr/local/include/stout/hashset.hpp /usr/local/include/process/mime.hpp \
- /usr/local/include/process/executor.hpp \
- /usr/local/include/process/id.hpp
+ /usr/include/boost/io_fwd.hpp ../multimesos/commons.hpp \
+ /usr/local/include/mesos/master/contender.hpp
 
 /usr/include/stdc-predef.h:
 
@@ -3430,9 +3431,53 @@ multimesos/multi_master_detector_module.lo: \
 
 /usr/include/c++/5/mutex:
 
-../multimesos/commons.hpp:
+/usr/local/include/process/process.hpp:
 
-/usr/local/include/mesos/master/contender.hpp:
+/usr/include/c++/5/queue:
+
+/usr/include/c++/5/bits/stl_queue.h:
+
+/usr/local/include/process/authenticator.hpp:
+
+/usr/local/include/process/http.hpp:
+
+/usr/local/include/process/socket.hpp:
+
+/usr/include/x86_64-linux-gnu/sys/wait.h:
+
+/usr/local/include/stout/json.hpp:
+
+/usr/local/include/picojson.h:
+
+/usr/local/include/stout/foreach.hpp:
+
+/usr/local/include/stout/jsonify.hpp:
+
+/usr/local/include/process/event.hpp:
+
+/usr/local/include/process/message.hpp:
+
+/usr/local/include/process/filter.hpp:
+
+/usr/local/include/process/firewall.hpp:
+
+/usr/local/include/stout/hashset.hpp:
+
+/usr/local/include/process/mime.hpp:
+
+../multimesos/http_endpoint.hpp:
+
+/usr/local/include/process/protobuf.hpp:
+
+/usr/local/include/process/defer.hpp:
+
+/usr/local/include/process/deferred.hpp:
+
+/usr/local/include/process/dispatch.hpp:
+
+/usr/local/include/process/executor.hpp:
+
+/usr/local/include/process/id.hpp:
 
 /usr/local/include/mesos/type_utils.hpp:
 
@@ -3730,46 +3775,6 @@ multimesos/multi_master_detector_module.lo: \
 
 /usr/include/boost/io_fwd.hpp:
 
-/usr/local/include/process/defer.hpp:
+../multimesos/commons.hpp:
 
-/usr/local/include/process/deferred.hpp:
-
-/usr/local/include/process/dispatch.hpp:
-
-/usr/local/include/process/process.hpp:
-
-/usr/include/c++/5/queue:
-
-/usr/include/c++/5/bits/stl_queue.h:
-
-/usr/local/include/process/authenticator.hpp:
-
-/usr/local/include/process/http.hpp:
-
-/usr/local/include/process/socket.hpp:
-
-/usr/include/x86_64-linux-gnu/sys/wait.h:
-
-/usr/local/include/stout/json.hpp:
-
-/usr/local/include/picojson.h:
-
-/usr/local/include/stout/foreach.hpp:
-
-/usr/local/include/stout/jsonify.hpp:
-
-/usr/local/include/process/event.hpp:
-
-/usr/local/include/process/message.hpp:
-
-/usr/local/include/process/filter.hpp:
-
-/usr/local/include/process/firewall.hpp:
-
-/usr/local/include/stout/hashset.hpp:
-
-/usr/local/include/process/mime.hpp:
-
-/usr/local/include/process/executor.hpp:
-
-/usr/local/include/process/id.hpp:
+/usr/local/include/mesos/master/contender.hpp:

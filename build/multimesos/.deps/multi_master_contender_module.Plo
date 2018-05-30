@@ -993,7 +993,167 @@ multimesos/multi_master_contender_module.lo: \
  /usr/include/c++/5/condition_variable /usr/include/c++/5/chrono \
  /usr/include/c++/5/ratio /usr/include/c++/5/bits/parse_numbers.h \
  /usr/include/c++/5/mutex /usr/local/include/mesos/module/contender.hpp \
- ../multimesos/multi_master_contender_module.hpp
+ ../multimesos/multi_master_contender_module.hpp \
+ ../multimesos/http_endpoint.hpp /usr/local/include/process/http.hpp \
+ /usr/include/c++/5/queue /usr/include/c++/5/bits/stl_queue.h \
+ /usr/local/include/process/socket.hpp \
+ /usr/include/x86_64-linux-gnu/sys/wait.h \
+ /usr/local/include/stout/json.hpp /usr/local/include/picojson.h \
+ /usr/local/include/stout/foreach.hpp \
+ /usr/local/include/stout/jsonify.hpp \
+ /usr/local/include/process/process.hpp \
+ /usr/local/include/process/authenticator.hpp \
+ /usr/local/include/process/event.hpp \
+ /usr/local/include/process/message.hpp \
+ /usr/local/include/process/filter.hpp \
+ /usr/local/include/process/firewall.hpp \
+ /usr/local/include/stout/hashset.hpp /usr/local/include/process/mime.hpp \
+ /usr/local/include/process/protobuf.hpp \
+ /usr/local/include/process/defer.hpp \
+ /usr/local/include/process/deferred.hpp \
+ /usr/local/include/process/dispatch.hpp \
+ /usr/local/include/process/executor.hpp \
+ /usr/local/include/process/id.hpp \
+ /usr/local/include/mesos/type_utils.hpp \
+ /usr/local/include/stout/uuid.hpp \
+ /usr/include/boost/uuid/random_generator.hpp \
+ /usr/include/boost/uuid/uuid.hpp \
+ /usr/include/boost/uuid/detail/config.hpp \
+ /usr/include/boost/uuid/detail/uuid_x86.hpp \
+ /usr/include/boost/uuid/seed_rng.hpp /usr/include/boost/uuid/sha1.hpp \
+ /usr/include/boost/random/uniform_int.hpp \
+ /usr/include/boost/random/uniform_int_distribution.hpp \
+ /usr/include/boost/random/detail/config.hpp \
+ /usr/include/boost/random/detail/operators.hpp \
+ /usr/include/boost/random/detail/uniform_int_float.hpp \
+ /usr/include/boost/random/detail/generator_bits.hpp \
+ /usr/include/boost/random/detail/disable_warnings.hpp \
+ /usr/include/boost/random/detail/enable_warnings.hpp \
+ /usr/include/boost/random/detail/signed_unsigned_tools.hpp \
+ /usr/include/boost/random/variate_generator.hpp \
+ /usr/include/boost/random/detail/ptr_helper.hpp \
+ /usr/include/boost/random/mersenne_twister.hpp \
+ /usr/include/boost/integer/integer_mask.hpp \
+ /usr/include/boost/random/detail/seed.hpp \
+ /usr/include/boost/random/detail/seed_impl.hpp \
+ /usr/include/boost/random/detail/const_mod.hpp \
+ /usr/include/boost/random/detail/large_arithmetic.hpp \
+ /usr/include/boost/random/detail/integer_log2.hpp \
+ /usr/include/boost/pending/integer_log2.hpp \
+ /usr/include/boost/integer/integer_log2.hpp \
+ /usr/include/boost/random/detail/generator_seed_seq.hpp \
+ /usr/include/boost/random/detail/polynomial.hpp \
+ /usr/include/boost/shared_ptr.hpp \
+ /usr/include/boost/smart_ptr/shared_ptr.hpp \
+ /usr/include/boost/smart_ptr/detail/shared_count.hpp \
+ /usr/include/boost/smart_ptr/bad_weak_ptr.hpp \
+ /usr/include/boost/smart_ptr/detail/sp_counted_base.hpp \
+ /usr/include/boost/smart_ptr/detail/sp_has_sync.hpp \
+ /usr/include/boost/smart_ptr/detail/sp_counted_base_gcc_x86.hpp \
+ /usr/include/boost/detail/sp_typeinfo.hpp \
+ /usr/include/boost/core/typeinfo.hpp \
+ /usr/include/boost/smart_ptr/detail/sp_counted_impl.hpp \
+ /usr/include/boost/smart_ptr/detail/sp_convertible.hpp \
+ /usr/include/boost/smart_ptr/detail/sp_nullptr_t.hpp \
+ /usr/include/boost/smart_ptr/detail/spinlock_pool.hpp \
+ /usr/include/boost/smart_ptr/detail/spinlock.hpp \
+ /usr/include/boost/smart_ptr/detail/spinlock_sync.hpp \
+ /usr/include/boost/smart_ptr/detail/yield_k.hpp \
+ /usr/include/boost/predef.h /usr/include/boost/predef/language.h \
+ /usr/include/boost/predef/language/stdc.h \
+ /usr/include/boost/predef/language/stdcpp.h \
+ /usr/include/boost/predef/language/objc.h \
+ /usr/include/boost/predef/architecture.h \
+ /usr/include/boost/predef/architecture/alpha.h \
+ /usr/include/boost/predef/architecture/arm.h \
+ /usr/include/boost/predef/architecture/blackfin.h \
+ /usr/include/boost/predef/architecture/convex.h \
+ /usr/include/boost/predef/architecture/ia64.h \
+ /usr/include/boost/predef/architecture/m68k.h \
+ /usr/include/boost/predef/architecture/mips.h \
+ /usr/include/boost/predef/architecture/parisc.h \
+ /usr/include/boost/predef/architecture/ppc.h \
+ /usr/include/boost/predef/architecture/pyramid.h \
+ /usr/include/boost/predef/architecture/rs6k.h \
+ /usr/include/boost/predef/architecture/sparc.h \
+ /usr/include/boost/predef/architecture/superh.h \
+ /usr/include/boost/predef/architecture/sys370.h \
+ /usr/include/boost/predef/architecture/sys390.h \
+ /usr/include/boost/predef/architecture/x86.h \
+ /usr/include/boost/predef/architecture/x86/32.h \
+ /usr/include/boost/predef/architecture/x86/64.h \
+ /usr/include/boost/predef/architecture/z.h \
+ /usr/include/boost/predef/compiler.h \
+ /usr/include/boost/predef/compiler/borland.h \
+ /usr/include/boost/predef/compiler/clang.h \
+ /usr/include/boost/predef/compiler/comeau.h \
+ /usr/include/boost/predef/compiler/compaq.h \
+ /usr/include/boost/predef/compiler/diab.h \
+ /usr/include/boost/predef/compiler/digitalmars.h \
+ /usr/include/boost/predef/compiler/dignus.h \
+ /usr/include/boost/predef/compiler/edg.h \
+ /usr/include/boost/predef/compiler/ekopath.h \
+ /usr/include/boost/predef/compiler/gcc_xml.h \
+ /usr/include/boost/predef/compiler/gcc.h \
+ /usr/include/boost/predef/detail/comp_detected.h \
+ /usr/include/boost/predef/compiler/greenhills.h \
+ /usr/include/boost/predef/compiler/hp_acc.h \
+ /usr/include/boost/predef/compiler/iar.h \
+ /usr/include/boost/predef/compiler/ibm.h \
+ /usr/include/boost/predef/compiler/intel.h \
+ /usr/include/boost/predef/compiler/kai.h \
+ /usr/include/boost/predef/compiler/llvm.h \
+ /usr/include/boost/predef/compiler/metaware.h \
+ /usr/include/boost/predef/compiler/metrowerks.h \
+ /usr/include/boost/predef/compiler/microtec.h \
+ /usr/include/boost/predef/compiler/mpw.h \
+ /usr/include/boost/predef/compiler/palm.h \
+ /usr/include/boost/predef/compiler/pgi.h \
+ /usr/include/boost/predef/compiler/sgi_mipspro.h \
+ /usr/include/boost/predef/compiler/sunpro.h \
+ /usr/include/boost/predef/compiler/tendra.h \
+ /usr/include/boost/predef/compiler/visualc.h \
+ /usr/include/boost/predef/compiler/watcom.h \
+ /usr/include/boost/predef/library.h \
+ /usr/include/boost/predef/library/c.h \
+ /usr/include/boost/predef/library/c/uc.h \
+ /usr/include/boost/predef/library/c/vms.h \
+ /usr/include/boost/predef/library/c/zos.h \
+ /usr/include/boost/predef/library/std.h \
+ /usr/include/boost/predef/library/std/_prefix.h \
+ /usr/include/boost/predef/detail/_exception.h \
+ /usr/include/boost/predef/library/std/cxx.h \
+ /usr/include/boost/predef/library/std/dinkumware.h \
+ /usr/include/boost/predef/library/std/libcomo.h \
+ /usr/include/boost/predef/library/std/modena.h \
+ /usr/include/boost/predef/library/std/msl.h \
+ /usr/include/boost/predef/library/std/roguewave.h \
+ /usr/include/boost/predef/library/std/sgi.h \
+ /usr/include/boost/predef/library/std/stdcpp3.h \
+ /usr/include/boost/predef/library/std/stlport.h \
+ /usr/include/boost/predef/library/std/vacpp.h \
+ /usr/include/boost/predef/os.h /usr/include/boost/predef/os/aix.h \
+ /usr/include/boost/predef/os/amigaos.h \
+ /usr/include/boost/predef/os/beos.h \
+ /usr/include/boost/predef/os/cygwin.h \
+ /usr/include/boost/predef/os/haiku.h /usr/include/boost/predef/os/hpux.h \
+ /usr/include/boost/predef/os/irix.h /usr/include/boost/predef/os/linux.h \
+ /usr/include/boost/predef/detail/os_detected.h \
+ /usr/include/boost/predef/os/os400.h \
+ /usr/include/boost/predef/os/qnxnto.h \
+ /usr/include/boost/predef/os/solaris.h \
+ /usr/include/boost/predef/os/unix.h /usr/include/boost/predef/os/vms.h \
+ /usr/include/boost/predef/os/windows.h /usr/include/boost/predef/other.h \
+ /usr/include/boost/predef/platform.h \
+ /usr/include/boost/predef/platform/mingw.h \
+ /usr/include/boost/predef/platform/windows_desktop.h \
+ /usr/include/boost/predef/platform/windows_store.h \
+ /usr/include/boost/predef/platform/windows_phone.h \
+ /usr/include/boost/predef/platform/windows_runtime.h \
+ /usr/include/boost/smart_ptr/detail/operator_bool.hpp \
+ /usr/include/boost/uuid/string_generator.hpp \
+ /usr/include/boost/uuid/uuid_io.hpp /usr/include/boost/io/ios_state.hpp \
+ /usr/include/boost/io_fwd.hpp
 
 /usr/include/stdc-predef.h:
 
@@ -3274,3 +3434,347 @@ multimesos/multi_master_contender_module.lo: \
 /usr/local/include/mesos/module/contender.hpp:
 
 ../multimesos/multi_master_contender_module.hpp:
+
+../multimesos/http_endpoint.hpp:
+
+/usr/local/include/process/http.hpp:
+
+/usr/include/c++/5/queue:
+
+/usr/include/c++/5/bits/stl_queue.h:
+
+/usr/local/include/process/socket.hpp:
+
+/usr/include/x86_64-linux-gnu/sys/wait.h:
+
+/usr/local/include/stout/json.hpp:
+
+/usr/local/include/picojson.h:
+
+/usr/local/include/stout/foreach.hpp:
+
+/usr/local/include/stout/jsonify.hpp:
+
+/usr/local/include/process/process.hpp:
+
+/usr/local/include/process/authenticator.hpp:
+
+/usr/local/include/process/event.hpp:
+
+/usr/local/include/process/message.hpp:
+
+/usr/local/include/process/filter.hpp:
+
+/usr/local/include/process/firewall.hpp:
+
+/usr/local/include/stout/hashset.hpp:
+
+/usr/local/include/process/mime.hpp:
+
+/usr/local/include/process/protobuf.hpp:
+
+/usr/local/include/process/defer.hpp:
+
+/usr/local/include/process/deferred.hpp:
+
+/usr/local/include/process/dispatch.hpp:
+
+/usr/local/include/process/executor.hpp:
+
+/usr/local/include/process/id.hpp:
+
+/usr/local/include/mesos/type_utils.hpp:
+
+/usr/local/include/stout/uuid.hpp:
+
+/usr/include/boost/uuid/random_generator.hpp:
+
+/usr/include/boost/uuid/uuid.hpp:
+
+/usr/include/boost/uuid/detail/config.hpp:
+
+/usr/include/boost/uuid/detail/uuid_x86.hpp:
+
+/usr/include/boost/uuid/seed_rng.hpp:
+
+/usr/include/boost/uuid/sha1.hpp:
+
+/usr/include/boost/random/uniform_int.hpp:
+
+/usr/include/boost/random/uniform_int_distribution.hpp:
+
+/usr/include/boost/random/detail/config.hpp:
+
+/usr/include/boost/random/detail/operators.hpp:
+
+/usr/include/boost/random/detail/uniform_int_float.hpp:
+
+/usr/include/boost/random/detail/generator_bits.hpp:
+
+/usr/include/boost/random/detail/disable_warnings.hpp:
+
+/usr/include/boost/random/detail/enable_warnings.hpp:
+
+/usr/include/boost/random/detail/signed_unsigned_tools.hpp:
+
+/usr/include/boost/random/variate_generator.hpp:
+
+/usr/include/boost/random/detail/ptr_helper.hpp:
+
+/usr/include/boost/random/mersenne_twister.hpp:
+
+/usr/include/boost/integer/integer_mask.hpp:
+
+/usr/include/boost/random/detail/seed.hpp:
+
+/usr/include/boost/random/detail/seed_impl.hpp:
+
+/usr/include/boost/random/detail/const_mod.hpp:
+
+/usr/include/boost/random/detail/large_arithmetic.hpp:
+
+/usr/include/boost/random/detail/integer_log2.hpp:
+
+/usr/include/boost/pending/integer_log2.hpp:
+
+/usr/include/boost/integer/integer_log2.hpp:
+
+/usr/include/boost/random/detail/generator_seed_seq.hpp:
+
+/usr/include/boost/random/detail/polynomial.hpp:
+
+/usr/include/boost/shared_ptr.hpp:
+
+/usr/include/boost/smart_ptr/shared_ptr.hpp:
+
+/usr/include/boost/smart_ptr/detail/shared_count.hpp:
+
+/usr/include/boost/smart_ptr/bad_weak_ptr.hpp:
+
+/usr/include/boost/smart_ptr/detail/sp_counted_base.hpp:
+
+/usr/include/boost/smart_ptr/detail/sp_has_sync.hpp:
+
+/usr/include/boost/smart_ptr/detail/sp_counted_base_gcc_x86.hpp:
+
+/usr/include/boost/detail/sp_typeinfo.hpp:
+
+/usr/include/boost/core/typeinfo.hpp:
+
+/usr/include/boost/smart_ptr/detail/sp_counted_impl.hpp:
+
+/usr/include/boost/smart_ptr/detail/sp_convertible.hpp:
+
+/usr/include/boost/smart_ptr/detail/sp_nullptr_t.hpp:
+
+/usr/include/boost/smart_ptr/detail/spinlock_pool.hpp:
+
+/usr/include/boost/smart_ptr/detail/spinlock.hpp:
+
+/usr/include/boost/smart_ptr/detail/spinlock_sync.hpp:
+
+/usr/include/boost/smart_ptr/detail/yield_k.hpp:
+
+/usr/include/boost/predef.h:
+
+/usr/include/boost/predef/language.h:
+
+/usr/include/boost/predef/language/stdc.h:
+
+/usr/include/boost/predef/language/stdcpp.h:
+
+/usr/include/boost/predef/language/objc.h:
+
+/usr/include/boost/predef/architecture.h:
+
+/usr/include/boost/predef/architecture/alpha.h:
+
+/usr/include/boost/predef/architecture/arm.h:
+
+/usr/include/boost/predef/architecture/blackfin.h:
+
+/usr/include/boost/predef/architecture/convex.h:
+
+/usr/include/boost/predef/architecture/ia64.h:
+
+/usr/include/boost/predef/architecture/m68k.h:
+
+/usr/include/boost/predef/architecture/mips.h:
+
+/usr/include/boost/predef/architecture/parisc.h:
+
+/usr/include/boost/predef/architecture/ppc.h:
+
+/usr/include/boost/predef/architecture/pyramid.h:
+
+/usr/include/boost/predef/architecture/rs6k.h:
+
+/usr/include/boost/predef/architecture/sparc.h:
+
+/usr/include/boost/predef/architecture/superh.h:
+
+/usr/include/boost/predef/architecture/sys370.h:
+
+/usr/include/boost/predef/architecture/sys390.h:
+
+/usr/include/boost/predef/architecture/x86.h:
+
+/usr/include/boost/predef/architecture/x86/32.h:
+
+/usr/include/boost/predef/architecture/x86/64.h:
+
+/usr/include/boost/predef/architecture/z.h:
+
+/usr/include/boost/predef/compiler.h:
+
+/usr/include/boost/predef/compiler/borland.h:
+
+/usr/include/boost/predef/compiler/clang.h:
+
+/usr/include/boost/predef/compiler/comeau.h:
+
+/usr/include/boost/predef/compiler/compaq.h:
+
+/usr/include/boost/predef/compiler/diab.h:
+
+/usr/include/boost/predef/compiler/digitalmars.h:
+
+/usr/include/boost/predef/compiler/dignus.h:
+
+/usr/include/boost/predef/compiler/edg.h:
+
+/usr/include/boost/predef/compiler/ekopath.h:
+
+/usr/include/boost/predef/compiler/gcc_xml.h:
+
+/usr/include/boost/predef/compiler/gcc.h:
+
+/usr/include/boost/predef/detail/comp_detected.h:
+
+/usr/include/boost/predef/compiler/greenhills.h:
+
+/usr/include/boost/predef/compiler/hp_acc.h:
+
+/usr/include/boost/predef/compiler/iar.h:
+
+/usr/include/boost/predef/compiler/ibm.h:
+
+/usr/include/boost/predef/compiler/intel.h:
+
+/usr/include/boost/predef/compiler/kai.h:
+
+/usr/include/boost/predef/compiler/llvm.h:
+
+/usr/include/boost/predef/compiler/metaware.h:
+
+/usr/include/boost/predef/compiler/metrowerks.h:
+
+/usr/include/boost/predef/compiler/microtec.h:
+
+/usr/include/boost/predef/compiler/mpw.h:
+
+/usr/include/boost/predef/compiler/palm.h:
+
+/usr/include/boost/predef/compiler/pgi.h:
+
+/usr/include/boost/predef/compiler/sgi_mipspro.h:
+
+/usr/include/boost/predef/compiler/sunpro.h:
+
+/usr/include/boost/predef/compiler/tendra.h:
+
+/usr/include/boost/predef/compiler/visualc.h:
+
+/usr/include/boost/predef/compiler/watcom.h:
+
+/usr/include/boost/predef/library.h:
+
+/usr/include/boost/predef/library/c.h:
+
+/usr/include/boost/predef/library/c/uc.h:
+
+/usr/include/boost/predef/library/c/vms.h:
+
+/usr/include/boost/predef/library/c/zos.h:
+
+/usr/include/boost/predef/library/std.h:
+
+/usr/include/boost/predef/library/std/_prefix.h:
+
+/usr/include/boost/predef/detail/_exception.h:
+
+/usr/include/boost/predef/library/std/cxx.h:
+
+/usr/include/boost/predef/library/std/dinkumware.h:
+
+/usr/include/boost/predef/library/std/libcomo.h:
+
+/usr/include/boost/predef/library/std/modena.h:
+
+/usr/include/boost/predef/library/std/msl.h:
+
+/usr/include/boost/predef/library/std/roguewave.h:
+
+/usr/include/boost/predef/library/std/sgi.h:
+
+/usr/include/boost/predef/library/std/stdcpp3.h:
+
+/usr/include/boost/predef/library/std/stlport.h:
+
+/usr/include/boost/predef/library/std/vacpp.h:
+
+/usr/include/boost/predef/os.h:
+
+/usr/include/boost/predef/os/aix.h:
+
+/usr/include/boost/predef/os/amigaos.h:
+
+/usr/include/boost/predef/os/beos.h:
+
+/usr/include/boost/predef/os/cygwin.h:
+
+/usr/include/boost/predef/os/haiku.h:
+
+/usr/include/boost/predef/os/hpux.h:
+
+/usr/include/boost/predef/os/irix.h:
+
+/usr/include/boost/predef/os/linux.h:
+
+/usr/include/boost/predef/detail/os_detected.h:
+
+/usr/include/boost/predef/os/os400.h:
+
+/usr/include/boost/predef/os/qnxnto.h:
+
+/usr/include/boost/predef/os/solaris.h:
+
+/usr/include/boost/predef/os/unix.h:
+
+/usr/include/boost/predef/os/vms.h:
+
+/usr/include/boost/predef/os/windows.h:
+
+/usr/include/boost/predef/other.h:
+
+/usr/include/boost/predef/platform.h:
+
+/usr/include/boost/predef/platform/mingw.h:
+
+/usr/include/boost/predef/platform/windows_desktop.h:
+
+/usr/include/boost/predef/platform/windows_store.h:
+
+/usr/include/boost/predef/platform/windows_phone.h:
+
+/usr/include/boost/predef/platform/windows_runtime.h:
+
+/usr/include/boost/smart_ptr/detail/operator_bool.hpp:
+
+/usr/include/boost/uuid/string_generator.hpp:
+
+/usr/include/boost/uuid/uuid_io.hpp:
+
+/usr/include/boost/io/ios_state.hpp:
+
+/usr/include/boost/io_fwd.hpp:

@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+/*
+
 #ifndef __TEST_ISOLATOR_MODULE_HPP__
 #define __TEST_ISOLATOR_MODULE_HPP__
 
@@ -178,3 +180,5 @@ private:
 }
 
 #endif // #ifndef __TEST_ISOLATOR_MODULE_HPP__
+
+*/

@@ -45,7 +45,8 @@ pkglib_LTLIBRARIES += libmultimesos.la
 libmultimesos_la_SOURCES = multimesos/multi_master_contender_module.cpp \
 				   multimesos/multi_master_detector_module.cpp \
 				   multimesos/commons.cpp \
-				   multimesos/multi_mesos_modules.cpp
+				   multimesos/multi_mesos_modules.cpp \
+				   multimesos/http_endpoint.cpp
 libmultimesos_la_LDFLAGS = -release $(PACKAGE_VERSION) -shared $(MESOS_LDFLAGS)
 # libmultimesos_la_CPPFLAGS = -I/home/erin/project-223b/mesos/build/src
 

@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 
+/*
 #include <mesos/mesos.hpp>
 
 #include <mesos/module/isolator.hpp>
@@ -174,3 +175,5 @@ mesos::modules::Module<Isolator> org_apache_mesos_TestIsolator(
     "Test Isolator module.",
     compatible,
     createTestIsolator);
+
+*/

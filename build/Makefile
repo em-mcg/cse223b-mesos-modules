@@ -153,7 +153,8 @@ am__dirstamp = $(am__leading_dot)dirstamp
 am_libmultimesos_la_OBJECTS =  \
 	multimesos/multi_master_contender_module.lo \
 	multimesos/multi_master_detector_module.lo \
-	multimesos/commons.lo multimesos/multi_mesos_modules.lo
+	multimesos/commons.lo multimesos/multi_mesos_modules.lo \
+	multimesos/http_endpoint.lo
 libmultimesos_la_OBJECTS = $(am_libmultimesos_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
@@ -278,7 +279,7 @@ AUTOMAKE = ${SHELL} /home/erin/project-223b/modules/missing automake-1.15
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
-CFLAGS = -I /home/erin/project-223b/mesos/src -Wno-unused-local-typedefs
+CFLAGS = -g -O2 -Wno-unused-local-typedefs
 CLANG = no
 CPP = gcc -E
 CPPFLAGS = 
@@ -381,7 +382,7 @@ htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
 install_sh = ${SHELL} /home/erin/project-223b/modules/install-sh
-libdir = ${exec_prefix}/lib
+libdir = /home/erin/project-223b/mesos/build/3rdparty
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
 localstatedir = ${prefix}/var
@@ -435,7 +436,8 @@ libtestauthentication_la_LDFLAGS = -release $(PACKAGE_VERSION) -shared $(MESOS_L
 libmultimesos_la_SOURCES = multimesos/multi_master_contender_module.cpp \
 				   multimesos/multi_master_detector_module.cpp \
 				   multimesos/commons.cpp \
-				   multimesos/multi_mesos_modules.cpp
+				   multimesos/multi_mesos_modules.cpp \
+				   multimesos/http_endpoint.cpp
 
 libmultimesos_la_LDFLAGS = -release $(PACKAGE_VERSION) -shared $(MESOS_LDFLAGS)
 libtesthook_la_SOURCES = hook/test_hook_module.cpp
@@ -532,6 +534,8 @@ multimesos/commons.lo: multimesos/$(am__dirstamp) \
 	multimesos/$(DEPDIR)/$(am__dirstamp)
 multimesos/multi_mesos_modules.lo: multimesos/$(am__dirstamp) \
 	multimesos/$(DEPDIR)/$(am__dirstamp)
+multimesos/http_endpoint.lo: multimesos/$(am__dirstamp) \
+	multimesos/$(DEPDIR)/$(am__dirstamp)
 
 libmultimesos.la: $(libmultimesos_la_OBJECTS) $(libmultimesos_la_DEPENDENCIES) $(EXTRA_libmultimesos_la_DEPENDENCIES) 
 	$(AM_V_CXXLD)$(libmultimesos_la_LINK) -rpath $(pkglibdir) $(libmultimesos_la_OBJECTS) $(libmultimesos_la_LIBADD) $(LIBS)
@@ -586,6 +590,7 @@ include authentication/$(DEPDIR)/test_authentication_modules.Plo
 include authentication/cram_md5/$(DEPDIR)/auxprop.Plo
 include hook/$(DEPDIR)/test_hook_module.Plo
 include multimesos/$(DEPDIR)/commons.Plo
+include multimesos/$(DEPDIR)/http_endpoint.Plo
 include multimesos/$(DEPDIR)/multi_master_contender_module.Plo
 include multimesos/$(DEPDIR)/multi_master_detector_module.Plo
 include multimesos/$(DEPDIR)/multi_mesos_modules.Plo

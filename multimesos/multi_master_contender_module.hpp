@@ -25,6 +25,8 @@
 
 #include <stout/nothing.hpp>
 
+#include "http_endpoint.hpp"
+
 using namespace mesos;
 using namespace mesos::master::contender;
 
@@ -34,25 +36,28 @@ namespace multimesos {
 class MultiMasterContender : public MasterContender
 {
 public:
-  MultiMasterContender()
-    : initialized(false),
-      promise(nullptr),
-      masterInfo(nullptr) {}
+  MultiMasterContender();
 
-  virtual ~MultiMasterContender();
+  MultiMasterContender(http::URL* urls);
+
+  ~MultiMasterContender();
 
   // MasterContender implementation.
-  virtual void initialize(const MasterInfo& masterInfo);
+  void initialize(const MasterInfo& masterInfo);
 
   // In this basic implementation the outer Future directly returns
   // and inner Future stays pending because there is only one
   // contender in the contest.
-  virtual process::Future<process::Future<Nothing>> contend();
+  process::Future<process::Future<Nothing>> contend();
+
+  std::string contenderAddress();
 
 private:
   bool initialized;
   process::Promise<Nothing>* promise;
   const MasterInfo* masterInfo;
+  ContenderHttp* infoEndpoint;
+  http::URL *leaderUrls;
 };
 
 } // namespace multimesos {
