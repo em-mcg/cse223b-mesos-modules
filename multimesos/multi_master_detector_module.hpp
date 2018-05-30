@@ -91,7 +91,6 @@ public:
 
   //void getMasterInfo(std::string master);
   void getMasterInfo(http::URL url);
-  static void parseMasterInfoResponse(const Future<http::Response>& res);
 
 private:
   void discard(const Future<Option<MasterInfo>>& future);

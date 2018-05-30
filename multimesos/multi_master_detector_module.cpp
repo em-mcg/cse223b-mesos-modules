@@ -88,6 +88,12 @@ Future<Option<MasterInfo>> MultiMasterDetectorProcess::detect(
 	return promise->future();
 }
 
+
+http::URL chooseMaster(http::URL *urls, http::URL currentUrl) {
+	return currentUrl;
+}
+
+
 void MultiMasterDetectorProcess::discard(
 		const Future<Option<MasterInfo>>& future) {
 	// Discard the promise holding this future.
@@ -114,23 +120,11 @@ void MultiMasterDetectorProcess::getMasterInfo(http::URL url) {
 
 			// fulfill the promise
 			appoint(Option<MasterInfo>::some(*mInfo));
-
-			LOG(INFO) << "Parsed hostname " << mInfo->hostname();
 		}));
 
 	// future.onAny(&MultiMasterDetectorProcess::parseMasterInfo);
 }
 
-void MultiMasterDetectorProcess::parseMasterInfoResponse(
-		const Future<http::Response>& res) {
-	MasterInfo* mInfo = new MasterInfo();
-	std::string byteMessage = res.get().body;
-
-	// parse bytes into MasterInfo protocol buffer
-	mInfo->ParseFromString(byteMessage);
-
-	LOG(INFO)<< "Parsed hostname " << mInfo->hostname();
-}
 
 MultiMasterDetector::MultiMasterDetector() {
 	process = new MultiMasterDetectorProcess();
