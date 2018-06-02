@@ -168,6 +168,6 @@ AC_CHECK_HEADERS([boost/lexical_cast.hpp boost/functional/hash.hpp],
                 [AC_MSG_ERROR([boost is not installed.])])
 
 # Create Modules JSON blobs.
-AC_CONFIG_FILES([isolator/modules.json], [])
+AC_CONFIG_FILES([isolator/modules.json multimesos/modules.json], [])
 
 AC_OUTPUT
