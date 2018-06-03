@@ -5,7 +5,7 @@
         "name": "org_apache_mesos_MultiMesosContender",
         "parameters": [{
           "key": "leaders",
-          "value": "http://127.0.0.1:5050,127.0.0.1:6060"
+          "value": "http://localhost:5050,localhost:6060"
         }]
       },
       {
