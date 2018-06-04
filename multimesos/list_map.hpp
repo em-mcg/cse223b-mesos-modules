@@ -11,6 +11,9 @@
 using std::vector;
 using std::unordered_set;
 
+/**
+ * Class with python-list like semantics
+ */
 namespace multimesos {
 
 template <typename T, typename hash, typename equal>
@@ -18,17 +21,19 @@ class ListMap
 {
 public:
 
-  ListMap() {
+  // initialize class
+  ListMap() {}
 
-  }
-
+  // clone a listmap
   ListMap(const multimesos::ListMap<T, hash, equal>& lm) {
 	  tset = lm.tset;
 	  tvec = lm.tvec;
   }
 
+  // initialize the list map
   ListMap(T* items, int numItems)
   {
+	  // push all items to the map and vector
 	  for (int i = 0; i < numItems; i++)
 	  {
 		  tvec.push_back(items[i]);
@@ -36,21 +41,25 @@ public:
 	  }
   }
   
+  // check if an item is in the list
   bool contains(T item)
   {
 	  return tset.find(item) != tset.end();
   }
   
+  // get the number of items
   int length()
   {
 	  return (int)tvec.size();
   }
   
+  // access [] operator
   T operator [](int i) const
   {
 	  return tvec[i];
   }
 
+  // `get` because it's nicer for pointers to listmaps
   T get(int i) const
   {
     return tvec[i];
@@ -58,7 +67,9 @@ public:
 
 
 private:
+  // set to check if vector contains an item
   unordered_set<T, hash, equal> tset;
+  // vector for indexed access to items
   vector<T> tvec;
 };
 
@@ -66,9 +77,12 @@ private:
 template <typename T, typename hash, typename equal>
 int len(ListMap<T, hash, equal> lm)
 {
+	// more python semantics
 	return lm.length();
 }
 
+// need to tell the set how to hash certain objects
+// other custom hash definitions should be added to this struct
 struct ListMapHash {
    size_t operator() (const process::http::URL& url) const {
      std::string str = commons::URLtoString(url);
@@ -78,6 +92,8 @@ struct ListMapHash {
    }
 };
 
+// need to tell the set how to compare two objects
+// only need the equals operator since listmap uses an unordered_set
 struct ListMapEqual {
   inline bool operator() (process::http::URL const& lhs, process::http::URL const& rhs) const
   {
@@ -97,6 +113,7 @@ struct ListMapEqual {
 		  lhsHost = net::getHostname(lhs.ip.get()).get();
 	  }
 
+	  // if domain names aren't equal, these URLs aren't equal
 	  if (lhsHost != rhsHost) {
 		  return false;
 	  }
@@ -111,14 +128,10 @@ struct ListMapEqual {
 	  // don't check protocol or path here
       return false;
   };
-
-  //inline bool operator() (const process::http::URL& lhs, process::http::URL& rhs) {
-  //  return (lhs.ip == rhs.ip && lhs.port == rhs.port);
-  //};
 };
 
+// long type needed to store URLs in this class
 typedef ListMap<process::http::URL, ListMapHash, ListMapEqual> UrlListMap;
-
 
 } // namespace multimesos {
 

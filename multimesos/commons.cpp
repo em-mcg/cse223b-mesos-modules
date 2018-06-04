@@ -9,11 +9,16 @@ using namespace mesos::master;
 using process::UPID;
 using std::string;
 
-
+/**
+ * Common utilities needed by other module classes
+ */
 namespace multimesos {
 
 namespace commons {
 
+// create a MasterInfo object from a pid
+// stolen from a mesos file and put here because the
+// original function isn't available through libmesos
 MasterInfo createMasterInfo(const UPID& pid)
 {
   MasterInfo info;
@@ -48,7 +53,7 @@ MasterInfo createMasterInfo(const UPID& pid)
   return info;
 }
 
-
+// also stolen from a mesos file because it can't be accessed through libmesos
 std::vector<MasterInfo::Capability> MASTER_CAPABILITIES()
 {
   MasterInfo::Capability::Type types[] = {
@@ -66,6 +71,7 @@ std::vector<MasterInfo::Capability> MASTER_CAPABILITIES()
 }
 
 
+// convert a URL to a string
 std::string URLtoString(process::http::URL url) {
 	std::stringstream buffer;
 
@@ -80,6 +86,7 @@ std::string URLtoString(process::http::URL url) {
 }
 
 
+// modulus that handles negative numbers
 int modulus(int a, int b) {
 	return (b + (a % b)) % b;
 }

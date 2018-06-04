@@ -8,7 +8,6 @@ using namespace process::http;
 
 using mesos::MasterInfo;
 
-
 namespace multimesos {
 
 // endpoint that will return MasterInfo
@@ -17,6 +16,7 @@ static const std::string MASTER_INFO_ENDPOINT = "/detect_multimesos";
 // libprocess registers endpoints as <protocol>://<ip>:<port>/<process_id>/<endpoint>
 static const std::string CONTENDER_HTTP_PROCESS = "master-contender-http";
 
+// content-type for protobuf is an octet-stream; there are also other non-standard (i.e. x-*) types we could use
 static const std::string PROTOBUF_CONTENT_TYPE = "application/octet-stream";
 
 // new process with ID CONTENDER_HTTP_PROCESS
@@ -42,16 +42,19 @@ void ContenderHttpProcess::initialize() {
 
 ContenderHttp::ContenderHttp(const mesos::MasterInfo& masterInfo) :
 		masterInfo(&masterInfo), process(new ContenderHttpProcess(masterInfo)) {
+	// spawn the contender process
 	spawn(process.get());
 }
 
 ContenderHttp::~ContenderHttp() {
+	// clean up ContenderHttp stuff
 	LOG(INFO) << "Terminating";
 	terminate(process.get());
 	wait(process.get());
 }
 
 std::string ContenderHttp::getMasterInfoPath() {
+	// return the path to the detector endpoint
 	return "/" + CONTENDER_HTTP_PROCESS + MASTER_INFO_ENDPOINT;
 }
 

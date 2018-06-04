@@ -23,8 +23,6 @@
 
 #include <stout/try.hpp>
 
-// #include <mesos/master/contender/standalone.hpp>
-
 #include "multi_master_contender_module.hpp"
 
 #include "http_endpoint.hpp"
@@ -39,17 +37,10 @@ using namespace process;
 using namespace mesos;
 using namespace mesos::master::contender;
 
-namespace multimesos {
-
-
-/*
-MultiMasterContender::MultiMasterContender()
-: initialized(false),
-  promise(nullptr),
-  masterInfo(nullptr),
-  infoEndpoint(nullptr)
-  {}
+/**
+ * This class is essentially the same as the standalone mesos contender
  */
+namespace multimesos {
 
 MultiMasterContender::MultiMasterContender(UrlListMap* urls)
 : initialized(false),
@@ -108,16 +99,10 @@ Future<Future<Nothing>> MultiMasterContender::contend()
   return promise->future();
 }
 
-
+// get the address of a contender
 std::string MultiMasterContender::contenderAddress() {
 	return this->masterInfo->hostname() + ":" + std::to_string(this->masterInfo->port());
 }
 
 } // namespace multimesos {
 
-// [] is the capture expression saying which variables
-// from outside context are available in lambda expression
-//
-// () has parameters for lambda
-// -> <type> { .. lambda expressions ... } is the return type and body
-//

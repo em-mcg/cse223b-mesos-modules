@@ -25,6 +25,7 @@ protected:
   virtual void initialize();
 
 private:
+  // info for this contender
   const mesos::MasterInfo* masterInfo;
 };
 
@@ -38,7 +39,10 @@ public:
   static std::string getMasterInfoPath();
 
 private:
+  // info for this contender
   const mesos::MasterInfo* masterInfo;
+
+  // the contender process
   Owned<ContenderHttpProcess> process;
 };
 

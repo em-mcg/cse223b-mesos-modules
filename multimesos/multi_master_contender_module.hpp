@@ -55,10 +55,19 @@ public:
   std::string contenderAddress();
 
 private:
+  // make sure the initialized function was called before contending
   bool initialized;
+
+  // a pending promise to contend
   process::Promise<Nothing>* promise;
+
+  // master info for the `master` that started this contender
   const MasterInfo* masterInfo;
+
+  // http endpoint that will return the info for this contender
   ContenderHttp* infoEndpoint;
+
+  // static list of other known masters
   UrlListMap* leaderUrls;
 };
 

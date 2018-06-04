@@ -106,11 +106,22 @@ public:
 private:
   void discard(const Future<Option<MasterInfo>>& future);
 
-  Option<MasterInfo> leader; // The appointed master.
+  // the appointed master
+  Option<MasterInfo> leader;
+
+  // a set of promises returned by the detector
   set<Promise<Option<MasterInfo>>*> promises;
+
+  // list of all known master URLs
   UrlListMap* leaderUrls;
+
+  // the address of `this` process
   http::URL address;
+
+  // set when the process destructor is called
   bool shuttingDown;
+
+  // set when the process has been initialized
   bool initialized;
 };
 
