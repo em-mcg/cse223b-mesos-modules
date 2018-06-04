@@ -111,6 +111,7 @@ private:
   UrlListMap* leaderUrls;
   http::URL address;
   bool shuttingDown;
+  bool initialized;
 };
 
 } // namespace multimesos

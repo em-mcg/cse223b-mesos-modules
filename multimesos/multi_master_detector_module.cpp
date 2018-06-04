@@ -46,20 +46,23 @@ namespace multimesos {
 MultiMasterDetectorProcess::MultiMasterDetectorProcess() :
 		ProcessBase(ID::generate("multi-master-detector")),
 		leaderUrls(nullptr),
-		shuttingDown(false)
+		shuttingDown(false),
+		initialized(false)
 {}
 
 MultiMasterDetectorProcess::MultiMasterDetectorProcess(
 		const MasterInfo& _leader) :
 		ProcessBase(ID::generate("multi-master-detector")), leader(_leader),
 		leaderUrls(nullptr),
-		shuttingDown(false)
+		shuttingDown(false),
+		initialized(false)
 {}
 
 MultiMasterDetectorProcess::MultiMasterDetectorProcess(UrlListMap* urls) :
 		ProcessBase(ID::generate("multi-master-detector")),
 		leaderUrls(urls),
-		shuttingDown(false) {}
+		shuttingDown(false),
+		initialized(false) {}
 
 
 MultiMasterDetectorProcess::~MultiMasterDetectorProcess()
@@ -72,6 +75,7 @@ MultiMasterDetectorProcess::~MultiMasterDetectorProcess()
 void MultiMasterDetectorProcess::initialize() {
 	LOG(INFO) << "Initializing master detector process";
 	setAddress();
+	initialized = true;
 }
 
 
@@ -83,6 +87,10 @@ void MultiMasterDetectorProcess::appoint(const Option<MasterInfo>& leader_) {
 
 Future<Option<MasterInfo>> MultiMasterDetectorProcess::detect(
 		const Option<MasterInfo>& previous) {
+	if (!initialized) {
+		return Failure("Initialize the detector first");
+	}
+
 	Promise<Option<MasterInfo>>* promise = new Promise<Option<MasterInfo>>();
 
 	promise->future().onDiscard(
@@ -109,6 +117,7 @@ void MultiMasterDetectorProcess::setAddress() {
 	buffer << "http://" << this->self().address.ip << ":" <<
 			this->self().address.port;
 
+	LOG(INFO) << buffer.str();
 	address = http::URL::parse(buffer.str()).get();
 }
 
@@ -125,7 +134,10 @@ http::URL MultiMasterDetectorProcess::chooseMaster(UrlListMap* urls, http::URL c
 http::URL MultiMasterDetectorProcess::chooseHash(UrlListMap* urls, http::URL currentURL) {
     std::string url = commons::URLtoString(currentURL);
     std::hash<std::string> hasher;
-    int hashed = (int)hasher(url);
+    int hashed = std::abs((int)hasher(url));
+
+    CHECK((hashed % urls->length()) < urls->length());
+    CHECK((hashed % urls->length()) >= 0);
 
     return urls->get(hashed % urls->length());
 }
@@ -152,11 +164,13 @@ void MultiMasterDetectorProcess::getMasterInfo(http::URL url) {
 	url.path = ContenderHttp::getMasterInfoPath();
 
 	// send message and wait for response
+	LOG(INFO) << "Sent GET request to detect endpoint " << url;
 	Future<http::Response> future = http::get(url);
 
 	future.onReady(defer(self(), [this](const Future<http::Response>& res) {
 			MasterInfo* mInfo = new MasterInfo();
 			std::string byteMessage = res.get().body;
+			LOG(INFO) << "Got http response from master";
 
 		    // parse bytes into MasterInfo protocol buffer
 			mInfo->ParseFromString(byteMessage);

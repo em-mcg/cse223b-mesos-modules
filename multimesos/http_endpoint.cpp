@@ -8,6 +8,7 @@ using namespace process::http;
 
 using mesos::MasterInfo;
 
+
 namespace multimesos {
 
 // endpoint that will return MasterInfo

@@ -79,6 +79,11 @@ std::string URLtoString(process::http::URL url) {
 	return str;
 }
 
+
+int modulus(int a, int b) {
+	return (b + (a % b)) % b;
+}
+
 } // namespace commons {
 
 } // namespace multimesos {
