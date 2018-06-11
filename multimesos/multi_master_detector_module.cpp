@@ -22,8 +22,10 @@
 
 #include <mesos/master/detector.hpp>
 #include <mesos/type_utils.hpp>
+#include <mesos/mesos.hpp>
 
 #include <process/defer.hpp>
+#include <process/delay.hpp>
 #include <process/dispatch.hpp>
 #include <process/future.hpp>
 #include <process/id.hpp>
@@ -32,7 +34,6 @@
 #include "list_map.hpp"
 
 using namespace process;
-// using namespace process::http;
 
 using namespace mesos;
 using namespace mesos::master::detector;
@@ -41,29 +42,30 @@ using std::set;
 using process::defer;
 using process::Future;
 
+const std::string MASTER_HEALTH_ENDPOINT = "/master/health";
+
 namespace multimesos {
 
 // constructors - TODO: can probably get rid of some of these constructors unless we find a use case
 MultiMasterDetectorProcess::MultiMasterDetectorProcess() :
 		ProcessBase(ID::generate("multi-master-detector")),
-		leaderUrls(nullptr),
-		shuttingDown(false),
-		initialized(false)
+		leaderUrls(nullptr)
 {}
 
 MultiMasterDetectorProcess::MultiMasterDetectorProcess(
 		const MasterInfo& _leader) :
-		ProcessBase(ID::generate("multi-master-detector")), leader(_leader),
-		leaderUrls(nullptr),
-		shuttingDown(false),
-		initialized(false)
+		ProcessBase(ID::generate("multi-master-detector")),
+		leader(_leader),
+		leaderUrls(nullptr)
 {}
 
-MultiMasterDetectorProcess::MultiMasterDetectorProcess(UrlListMap* urls) :
+MultiMasterDetectorProcess::MultiMasterDetectorProcess(
+  UrlListMap* urls,
+  bool _detectAll) :
 		ProcessBase(ID::generate("multi-master-detector")),
 		leaderUrls(urls),
-		shuttingDown(false),
-		initialized(false) {}
+		detectAll(_detectAll)
+{}
 
 
 MultiMasterDetectorProcess::~MultiMasterDetectorProcess()
@@ -78,14 +80,135 @@ void MultiMasterDetectorProcess::initialize() {
 	// initialize the detector process
 	LOG(INFO) << "Initializing master detector process";
 	setAddress();
+
+	int numLeaders = leaderUrls->length();
+	failedPings = new int[numLeaders];
+	masterHeartbeatTimers = new process::Timer[numLeaders];
+	//leaderPromises;
+
+	for (int i = 0; i < numLeaders; i++) {
+	  // initialize all ping counters to 0
+	  failedPings[i] = 0;
+	  leaderPromises.push_back(new Promise<Option<MasterInfo>>());
+	}
+
+	if (detectAll) {
+	  mIndex = -1;
+	}
+
+	// initialize
 	initialized = true;
+
+	detecting.store(false);
+
+	// start heartbeat
+	sendHeartBeats();
+}
+
+
+void MultiMasterDetectorProcess::sendHeartBeats() {
+  // pause heartbeat while detecting
+  if (!detecting.load()) {
+    if (detectAll && mIndex == leaderUrls->length() - 1) {
+      // new detection cycle
+      // detect all will try each master again
+      // send a heartbeat to each leader
+      for (int i = 0; i < leaderUrls->length(); i++) {
+        sendHeartBeat(i);
+      }
+    } else if (leader.isSome()) {
+      // only send a heartbeat to the current leader index
+      sendHeartBeat(mIndex);
+    }
+  }
+
+  // cancel timer just in case
+  Clock::cancel(heartBeatTimer);
+
+  // send another heartbeat after
+  heartBeatTimer = process::delay(
+        DEFAULT_PING_BACKOFF_FACTOR,
+        self(),
+        &MultiMasterDetectorProcess::sendHeartBeats);
+}
+
+
+void MultiMasterDetectorProcess::sendHeartBeat(int index) {
+  http::URL url = leaderUrls->get(index);
+  url.path = MASTER_HEALTH_ENDPOINT;
+
+  Future<http::Response> future = get(url);
+  future.onReady(defer(self(), [this, index](const Future<http::Response>& res) {
+      // cancel clock and reset failedPing
+      Clock::cancel(masterHeartbeatTimers[index]);
+      failedPings[index] = 0;
+
+    })).onFailed(lambda::bind([this, index, url](const std::string& message, const std::string& failure) {
+      // go to failure function
+      // LOG(INFO) << "Failed to contact master " << url << " with error " << failure << " " << message;
+      heartBeatFailure(index, DEFAULT_PING_BACKOFF_FACTOR);
+  }, "Failed to contact master", lambda::_1));
+
+  // If this timer goes off, we didn't receive a response
+  // within a reasonable amount of time
+  masterHeartbeatTimers[index] = process::delay(
+      DEFAULT_PING_BACKOFF_FACTOR,
+      self(),
+      &MultiMasterDetectorProcess::heartBeatFailure,
+      index,
+      DEFAULT_PING_BACKOFF_FACTOR/2);
+}
+
+
+void MultiMasterDetectorProcess::heartBeatFailure(int index, Duration maxBackoff) {
+  // okay to cancel an already canceled/ended timer
+  Clock::cancel(masterHeartbeatTimers[index]);
+
+  // increment the number of failures
+  failedPings[index]++;
+
+  // if we've failed too many times, take some action
+  if (failedPings[index] >= DETECTOR_MAX_PING_TIMEOUT) {
+    maxHeartbeatFailure(index);
+  }
+
+  // send another heartbeat
+  defer(self(), &Self::sendHeartBeat, index);
+}
+
+
+void MultiMasterDetectorProcess::maxHeartbeatFailure(int index) {
+  if (detectAll) {
+    mIndex = -1;
+    detect(leader);
+    // discardPromises(&promises, leaderPromises[index]->future());
+  } else {
+    // set leader to none and discard promises
+    // this will cause another detect cycle to occur
+    LOG(INFO) << "Leader heartbeats failed. Appointing new leader";
+    int newLeaderIndex = chooseRandomMaster(this->leaderUrls, this->address);
+    getMasterInfo(newLeaderIndex);
+  }
 }
 
 
 void MultiMasterDetectorProcess::appoint(const Option<MasterInfo>& leader_) {
+  // save the leader we elected and resolve all pending promises with the leader
+  setPromises(&promises, leader_);
+}
+
+
+void MultiMasterDetectorProcess::appoint(const Option<MasterInfo>& leader_, int leaderIndex) {
 	// save the leader we elected and resolve all pending promises with the leader
+  LOG(INFO) << "Appointing leader " << leader_.get().pid();
 	leader = leader_;
-	setPromises(&promises, leader);
+
+	if (detectAll) {
+	  leaderPromises[leaderIndex]->set(leader_);
+	  setPromises(&promises, leader_);
+	} else {
+	  setPromises(&promises, leader_);
+	}
 }
 
 // detect a Mesos master
@@ -95,6 +218,8 @@ Future<Option<MasterInfo>> MultiMasterDetectorProcess::detect(
 	if (!initialized) {
 		return Failure("Initialize the detector first");
 	}
+
+	detecting.store(true);
 
 	// promise master info; will be returned to `master`, `slave`, or `framework`
 	Promise<Option<MasterInfo>>* promise = new Promise<Option<MasterInfo>>();
@@ -107,58 +232,98 @@ Future<Option<MasterInfo>> MultiMasterDetectorProcess::detect(
 	promises.insert(promise);
 
 	// if there is a leader, continue talking to it
-	if (leader.isSome()) {
+	if ((leader.isSome() && !detectAll) ||
+	    (mIndex == leaderUrls->length() - 1 && detectAll)) {
 		// return a pending promise so detect isn't called continuously
-		return promise->future();
+    detecting.store(false);
+    return promise->future();
 	}
 
+  // try the old leader first
+	if (detectAll) {
+	  int newLeaderIndex;
+	  if (detectAll) {
+	    newLeaderIndex = chooseSequentialMaster(this->leaderUrls, this->address);
+	  } else {
+	    newLeaderIndex = chooseRandomMaster(this->leaderUrls, this->address);
+	  }
+	  getMasterInfo(newLeaderIndex);
+	} else {
+	  getMasterInfo(mIndex);
+	}
+
+
 	// otherwise, find a leader
-	http::URL newLeader = chooseMaster(this->leaderUrls, this->address);
+  /*
+
+	*/
+
+  // save the latest leader promise
+  leaderPromises[mIndex] = promise;
 
 	// get the info for that leader; this method will also appoint the master
-	getMasterInfo(newLeader);
+	// getMasterInfo(newLeaderIndex);
 
 	// return what should be a `set` promise
+	detecting.store(false);
 	return promise->future();
 }
 
 void MultiMasterDetectorProcess::setAddress() {
-	// once the `DetectorProcess` has been initialized, store full process
-	// address for convenience
-	std::stringstream buffer;
+  // once the `DetectorProcess` has been initialized, store full process
+  // address for convenience
+  std::stringstream buffer;
 
-	buffer << "http://" << this->self().address.ip << ":" <<
-			this->self().address.port;
+  buffer << "http://" << this->self().address.ip << ":" <<
+      this->self().address.port;
 
-	LOG(INFO) << "Detector process address is " << buffer.str();
+  LOG(INFO) << "Detector process address is " << buffer.str();
 	address = http::URL::parse(buffer.str()).get();
 }
 
 
-http::URL MultiMasterDetectorProcess::chooseMaster(UrlListMap* urls, http::URL currentURL) {
+int MultiMasterDetectorProcess::chooseRandomMaster(UrlListMap* urls, http::URL currentURL) {
 	// if this node is a `master` (i.e. its URL is in the url list), choose self
 	if (urls->contains(currentURL)) {
-    	return currentURL;
-    }
+	    mIndex = urls->index(currentURL);
+    	return urls->index(currentURL);
+  }
 
 	// otherwise, choose a master from the url list
-    return chooseHash(urls, currentURL);
+  return chooseHash(urls, currentURL);
 }
 
 
-http::URL MultiMasterDetectorProcess::chooseHash(UrlListMap* urls, http::URL currentURL) {
+int MultiMasterDetectorProcess::chooseSequentialMaster(UrlListMap* urls, http::URL currentURL) {
+  // if this node is a `master` (i.e. its URL is in the url list), choose self
+  if (urls->contains(currentURL)) {
+      mIndex = urls->index(currentURL);
+      return urls->index(currentURL);
+  }
+
+  mIndex = (mIndex + 1) % urls->length();
+  return mIndex;
+}
+
+
+int MultiMasterDetectorProcess::chooseHash(UrlListMap* urls, http::URL currentURL) {
 	// hash a URL and choose a new master
 	// URL may be `this` node's URL or that of the previous master
-    std::string url = commons::URLtoString(currentURL);
-    std::hash<std::string> hasher;
-    int hashed = std::abs((int)hasher(url));
+  std::string url = commons::URLtoString(currentURL);
+  std::hash<std::string> hasher;
 
-    // some checks just in case
-    CHECK((hashed % urls->length()) < urls->length());
-    CHECK((hashed % urls->length()) >= 0);
+  // add two random letters to hash
+  char r1 = 'A' + (random() % 26);
+  char r2 = 'A' + (random() % 26);
+  int hashed = std::abs((int)hasher(url + r1 + r2));
 
-    // return the URL; TODO: could do this differently
-    return urls->get(hashed % urls->length());
+  // some checks just in case
+  CHECK((hashed % urls->length()) < urls->length());
+  CHECK((hashed % urls->length()) >= 0);
+
+  mIndex = hashed % urls->length();
+  // return the URL; TODO: could do this differently
+  return mIndex;
 }
 
 
@@ -171,14 +336,16 @@ void MultiMasterDetectorProcess::discard(
 	// promise was discarded but detector isn't shutting down
 	if (!shuttingDown) {
 		// otherwise, find a leader
-		http::URL newLeader = chooseMaster(this->leaderUrls, this->address);
-		getMasterInfo(newLeader);
+	  // int newLeaderIndex = chooseRandomMaster(this->leaderUrls, this->address);
+		getMasterInfo(mIndex);
 	}
 }
 
-void MultiMasterDetectorProcess::getMasterInfo(http::URL url) {
+void MultiMasterDetectorProcess::getMasterInfo(int leaderIndex) {
 	// master should be an address of the form <protocol>://<ip|hostname>:<port>
 	// use a contender method to get the master endpoint and set it as the URL path
+  http::URL url = leaderUrls->get(leaderIndex);
+
 	url.path = ContenderHttp::getMasterInfoPath();
 
 	// send message and wait for response
@@ -187,7 +354,7 @@ void MultiMasterDetectorProcess::getMasterInfo(http::URL url) {
 	// ask the endpoint for master info
 	Future<http::Response> future = http::get(url);
 
-	future.onReady(defer(self(), [this](const Future<http::Response>& res) {
+	future.onReady(defer(self(), [this, leaderIndex](const Future<http::Response>& res) {
 			// set up a new MI object and populate it with protocol buffer bytes
 			MasterInfo* mInfo = new MasterInfo();
 			std::string byteMessage = res.get().body;
@@ -196,14 +363,22 @@ void MultiMasterDetectorProcess::getMasterInfo(http::URL url) {
 			mInfo->ParseFromString(byteMessage);
 
 			// fulfill the promise
-			appoint(Option<MasterInfo>::some(*mInfo));
+			appoint(Option<MasterInfo>::some(*mInfo), leaderIndex);
 		})).onFailed(lambda::bind([this, url](const std::string& message, const std::string& failure) {
 			// GET request failed
 			// show error and choose a new master to contact
 			LOG(WARNING) << message << " " << failure;
-			http::URL newURL = MultiMasterDetectorProcess::chooseHash(this->leaderUrls, url);
-			LOG(INFO) << "Attempting to connect to leader " << newURL;
-			getMasterInfo(newURL);
+
+			int newLeaderIndex;
+
+			if (detectAll) {
+			  newLeaderIndex = chooseSequentialMaster(this->leaderUrls, this->address);
+			} else {
+			  newLeaderIndex = chooseRandomMaster(this->leaderUrls, this->address);
+			}
+
+			LOG(INFO) << "Attempting to connect to leader " << newLeaderIndex;
+			getMasterInfo(newLeaderIndex);
 	}, "Failed to contact master", lambda::_1));
 
 	// TODO: figure out benefits of onAny(defer([callback])) vs onAny([callback])
@@ -217,9 +392,9 @@ MultiMasterDetector::MultiMasterDetector() {
 	spawn(process);
 }
 
-MultiMasterDetector::MultiMasterDetector(UrlListMap* urls) {
+MultiMasterDetector::MultiMasterDetector(UrlListMap* urls, bool detectAll) {
 	// spawn the detector process with a list of master URLs
-	process = new MultiMasterDetectorProcess(urls);
+	process = new MultiMasterDetectorProcess(urls, detectAll);
 	spawn(process);
 }
 
@@ -251,6 +426,7 @@ MultiMasterDetector::~MultiMasterDetector() {
 void MultiMasterDetector::appoint(const Option<MasterInfo>& leader) {
 	// we could directory appoint a master from the detector class
 	// normally the detector process will handle appointment
+
 	dispatch(process, &MultiMasterDetectorProcess::appoint, leader);
 }
 

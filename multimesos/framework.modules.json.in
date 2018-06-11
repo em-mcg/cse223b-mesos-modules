@@ -13,13 +13,10 @@
         "parameters": [{
           "key": "leaders",
           "value": "http://127.0.0.1:5050,127.0.0.1:6060"
-        }]
-      },
-      {
-        "name": "org_apache_mesos_FrameworkMultiMesosDetector",
-        "parameters": [{
-          "key": "leaders",
-          "value": "http://127.0.0.1:5050,127.0.0.1:6060"
+        },
+        {
+          "key": "detect_all",
+          "value": "false"
         }]
       }
     ]

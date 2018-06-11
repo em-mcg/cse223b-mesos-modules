@@ -47,6 +47,20 @@ public:
 	  return tset.find(item) != tset.end();
   }
   
+  // return the index of an item in the list
+  // or -1 if not found
+  int index(T item)
+  {
+    for (int i = 0; i < tvec.size(); i++)
+    {
+      if (tvec[i] == item) {
+        return i;
+      }
+    }
+
+    return -1;
+  }
+
   // get the number of items
   int length()
   {
@@ -92,42 +106,48 @@ struct ListMapHash {
    }
 };
 
+
+inline bool operator== (process::http::URL const& lhs, process::http::URL const& rhs)
+{
+  std::string rhsHost;
+  std::string lhsHost;
+
+  // try to resolve domain names
+  if (rhs.domain.isSome()) {
+    rhsHost = rhs.domain.get();
+  } else {
+    rhsHost = net::getHostname(rhs.ip.get()).get();
+  }
+
+  if (lhs.domain.isSome()) {
+    lhsHost = lhs.domain.get();
+  } else {
+    lhsHost = net::getHostname(lhs.ip.get()).get();
+  }
+
+  // if domain names aren't equal, these URLs aren't equal
+  if (lhsHost != rhsHost) {
+    return false;
+  }
+
+  // check if ports are equal
+  if (lhs.port.isSome() && rhs.port.isSome()) {
+    if (lhs.port.get() == rhs.port.get()) {
+      return true;
+    }
+  }
+
+  // don't check protocol or path here
+    return false;
+}
+
 // need to tell the set how to compare two objects
 // only need the equals operator since listmap uses an unordered_set
 struct ListMapEqual {
   inline bool operator() (process::http::URL const& lhs, process::http::URL const& rhs) const
   {
-	  std::string rhsHost;
-	  std::string lhsHost;
-
-	  // try to resolve domain names
-	  if (rhs.domain.isSome()) {
-		  rhsHost = rhs.domain.get();
-	  } else {
-		  rhsHost = net::getHostname(rhs.ip.get()).get();
-	  }
-
-	  if (lhs.domain.isSome()) {
-		  lhsHost = lhs.domain.get();
-	  } else {
-		  lhsHost = net::getHostname(lhs.ip.get()).get();
-	  }
-
-	  // if domain names aren't equal, these URLs aren't equal
-	  if (lhsHost != rhsHost) {
-		  return false;
-	  }
-
-	  // check if ports are equal
-	  if (lhs.port.isSome() && rhs.port.isSome()) {
-		  if (lhs.port.get() == rhs.port.get()) {
-			  return true;
-		  }
-	  }
-
-	  // don't check protocol or path here
-      return false;
-  };
+	  return lhs == rhs;
+  }
 };
 
 // long type needed to store URLs in this class

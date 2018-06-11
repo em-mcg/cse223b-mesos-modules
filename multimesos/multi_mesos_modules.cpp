@@ -48,10 +48,25 @@ mesos::modules::Module<MasterDetector> org_apache_mesos_MultiMesosDetector(
     "MultiMaster Detector",
     nullptr,
     [](const Parameters& parameters) -> MasterDetector* {
-	  std::map<std::string, std::string> pMap = parseParameters(parameters);
-	  UrlListMap* urls = parseAddresses(pMap);
+      std::map<std::string, std::string> pMap = parseParameters(parameters);
+      UrlListMap* urls = parseAddresses(pMap);
 
-      return new MultiMasterDetector(urls);
+      return new MultiMasterDetector(urls, false);
+    });
+
+// create the master detector
+mesos::modules::Module<MasterDetector> org_apache_mesos_FrameworkMultiMesosDetector(
+    MESOS_MODULE_API_VERSION,
+    MESOS_VERSION,
+    "Erin McGinnis",
+    "emmcginn@ucsd.edu",
+    "Framework MultiMaster Detector",
+    nullptr,
+    [](const Parameters& parameters) -> MasterDetector* {
+      std::map<std::string, std::string> pMap = parseParameters(parameters);
+      UrlListMap* urls = parseAddresses(pMap);
+
+      return new MultiMasterDetector(urls, true);
     });
 
 

@@ -39,6 +39,10 @@ using std::set;
 
 namespace multimesos {
 
+constexpr int DETECTOR_MAX_PING_TIMEOUT = 5;
+
+constexpr Duration DEFAULT_PING_BACKOFF_FACTOR = Milliseconds(200);
+
 // Forward declarations.
 class MultiMasterDetectorProcess;
 
@@ -53,7 +57,7 @@ public:
   // unnecessary to call 'appoint()' separately.
   explicit MultiMasterDetector(const MasterInfo& leader);
 
-  explicit MultiMasterDetector(UrlListMap* urls);
+  explicit MultiMasterDetector(UrlListMap* urls, bool detectAll);
 
   // Same as above but takes UPID as the parameter.
   explicit MultiMasterDetector(const process::UPID& leader);
@@ -80,7 +84,7 @@ class MultiMasterDetectorProcess
 public:
   MultiMasterDetectorProcess();
 
-  MultiMasterDetectorProcess(UrlListMap* urls);
+  MultiMasterDetectorProcess(UrlListMap* urls, bool detectAll);
 
   explicit MultiMasterDetectorProcess(const MasterInfo& _leader);
 
@@ -88,29 +92,45 @@ public:
 
   void appoint(const Option<MasterInfo>& leader_);
 
+  void appoint(const Option<MasterInfo>& leader_, int leaderIndex);
+
   void initialize();
 
   Future<Option<MasterInfo>> detect(
       const Option<MasterInfo>& previous = None());
 
   //void getMasterInfo(std::string master);
-  void getMasterInfo(http::URL url);
+  void getMasterInfo(int leaderIndex);
 
   void setAddress();
 
-  http::URL chooseHash(UrlListMap* urls, http::URL currentURL);
+  int chooseHash(UrlListMap* urls, http::URL currentURL);
 
-  http::URL chooseMaster(UrlListMap* urls, http::URL currentUrl);
+  int chooseRandomMaster(UrlListMap* urls, http::URL currentUrl);
 
+  int chooseSequentialMaster(UrlListMap* urls, http::URL currentURL);
 
 private:
   void discard(const Future<Option<MasterInfo>>& future);
+
+  void sendHeartBeats();
+
+  void sendHeartBeat(int index);
+
+  void receiveHeartBeat();
+
+  void heartBeatFailure(int index, Duration maxBackoff);
+
+  void maxHeartbeatFailure(int index);
 
   // the appointed master
   Option<MasterInfo> leader;
 
   // a set of promises returned by the detector
   set<Promise<Option<MasterInfo>>*> promises;
+
+  // one promise per leader
+  vector<Promise<Option<MasterInfo>>*> leaderPromises;
 
   // list of all known master URLs
   UrlListMap* leaderUrls;
@@ -119,10 +139,25 @@ private:
   http::URL address;
 
   // set when the process destructor is called
-  bool shuttingDown;
+  bool shuttingDown = false;
+
+  int* failedPings = nullptr;
+
+  process::Timer* masterHeartbeatTimers = nullptr;
+
+  process::Timer heartBeatTimer;
 
   // set when the process has been initialized
-  bool initialized;
+  bool initialized = false;
+
+  std::atomic<bool> detecting;
+
+  int count = 0;
+
+  // current master index
+  int mIndex = 0;
+
+  bool detectAll = false;
 };
 
 } // namespace multimesos
