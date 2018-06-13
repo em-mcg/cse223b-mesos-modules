@@ -138,7 +138,7 @@ inline bool operator== (process::http::URL const& lhs, process::http::URL const&
   }
 
   // don't check protocol or path here
-    return false;
+  return false;
 }
 
 // need to tell the set how to compare two objects

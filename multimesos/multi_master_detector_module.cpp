@@ -204,11 +204,13 @@ void MultiMasterDetectorProcess::appoint(const Option<MasterInfo>& leader_, int 
 	leader = leader_;
 
 	if (detectAll) {
-	  leaderPromises[leaderIndex]->set(leader_);
+	  // leaderPromises[leaderIndex]->set(leader_);
 	  setPromises(&promises, leader_);
 	} else {
 	  setPromises(&promises, leader_);
 	}
+
+	leaderPromises[leaderIndex] = *(promises.begin());
 }
 
 // detect a Mesos master
@@ -259,7 +261,7 @@ Future<Option<MasterInfo>> MultiMasterDetectorProcess::detect(
 	*/
 
   // save the latest leader promise
-  leaderPromises[mIndex] = promise;
+  // leaderPromises[mIndex] = promise;
 
 	// get the info for that leader; this method will also appoint the master
 	// getMasterInfo(newLeaderIndex);
@@ -284,7 +286,8 @@ void MultiMasterDetectorProcess::setAddress() {
 
 int MultiMasterDetectorProcess::chooseRandomMaster(UrlListMap* urls, http::URL currentURL) {
 	// if this node is a `master` (i.e. its URL is in the url list), choose self
-	if (urls->contains(currentURL)) {
+  LOG(INFO) << "Choosing random master. My addr is " << currentURL;
+  if (urls->contains(currentURL)) {
 	    mIndex = urls->index(currentURL);
     	return urls->index(currentURL);
   }
