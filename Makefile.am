@@ -44,10 +44,14 @@ libtestauthentication_la_LDFLAGS = -release $(PACKAGE_VERSION) -shared $(MESOS_L
 pkglib_LTLIBRARIES += libmultimesos.la
 libmultimesos_la_SOURCES = multimesos/multi_master_contender_module.cpp \
 				   multimesos/multi_master_detector_module.cpp \
+				   multimesos/sequential_detector_module.cpp \
+				   multimesos/random_detector_module.cpp \
 				   multimesos/commons.cpp \
 				   multimesos/multi_mesos_modules.cpp \
 				   multimesos/http_endpoint.cpp \
-                                   multimesos/list_map.hpp
+           multimesos/list_map.hpp \
+           multimesos/constants.hpp
+           
 libmultimesos_la_LDFLAGS = -release $(PACKAGE_VERSION) -shared $(MESOS_LDFLAGS)
 libmultimesos_la_CPPFLAGS = -g
 

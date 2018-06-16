@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef __MULTI_MASTER_DETECTOR_MODULE_HPP__
-#define __MULTI_MASTER_DETECTOR_MODULE_HPP__
+#ifndef __SEQUENTIAL_MASTER_MODULE_HPP__
+#define __SEQUENTIAL_MASTER_MODULE_HPP__
 
 #include <string>
 
@@ -31,8 +31,6 @@
 
 #include "list_map.hpp"
 
-#include "constants.hpp"
-
 using namespace mesos;
 using namespace process;
 using namespace mesos::master::detector;
@@ -42,25 +40,25 @@ using std::set;
 namespace multimesos {
 
 // Forward declarations.
-class MultiMasterDetectorProcess;
+class SequentialDetectorProcess;
 
 // A standalone implementation of the MasterDetector with no external
 // discovery mechanism so the user has to manually appoint a leader
 // to the detector for it to be detected.
-class MultiMasterDetector : public MasterDetector
+class SequentialMasterDetector : public MasterDetector
 {
 public:
-  MultiMasterDetector();
+  SequentialMasterDetector();
   // Use this constructor if the leader is known beforehand so it is
   // unnecessary to call 'appoint()' separately.
-  explicit MultiMasterDetector(const MasterInfo& leader);
+  explicit SequentialMasterDetector(const MasterInfo& leader);
 
-  explicit MultiMasterDetector(UrlListMap* urls, bool detectAll);
+  explicit SequentialMasterDetector(UrlListMap* urls);
 
   // Same as above but takes UPID as the parameter.
-  explicit MultiMasterDetector(const process::UPID& leader);
+  explicit SequentialMasterDetector(const process::UPID& leader);
 
-  virtual ~MultiMasterDetector();
+  virtual ~SequentialMasterDetector();
 
   // Appoint the leading master so it can be *detected*.
   void appoint(const Option<MasterInfo>& leader);
@@ -72,21 +70,22 @@ public:
       const Option<MasterInfo>& previous = None());
 
 private:
-  MultiMasterDetectorProcess* process;
+  SequentialDetectorProcess* process;
 };
 
 
-class MultiMasterDetectorProcess
-  : public Process<MultiMasterDetectorProcess>
+// TODO(erin): inherit from same thing as random detector
+class SequentialDetectorProcess
+  : public Process<SequentialDetectorProcess>
 {
 public:
-  MultiMasterDetectorProcess();
+  SequentialDetectorProcess();
 
-  MultiMasterDetectorProcess(UrlListMap* urls, bool detectAll);
+  SequentialDetectorProcess(UrlListMap* urls);
 
-  explicit MultiMasterDetectorProcess(const MasterInfo& _leader);
+  explicit SequentialDetectorProcess(const MasterInfo& _leader);
 
-  ~MultiMasterDetectorProcess();
+  ~SequentialDetectorProcess();
 
   void appoint(const Option<MasterInfo>& leader_);
 
@@ -102,11 +101,7 @@ public:
 
   void setAddress();
 
-  int chooseHash(UrlListMap* urls, http::URL currentURL);
-
-  int chooseRandomMaster(UrlListMap* urls, http::URL currentUrl);
-
-  int chooseSequentialMaster(UrlListMap* urls, http::URL currentURL);
+  int chooseMaster(UrlListMap* urls, http::URL currentURL);
 
 private:
   void discard(const Future<Option<MasterInfo>>& future);
@@ -150,14 +145,10 @@ private:
 
   std::atomic<bool> detecting;
 
-  int count = 0;
-
   // current master index
   int mIndex = 0;
-
-  bool detectAll = false;
 };
 
 } // namespace multimesos
 
-#endif // __MULTI_MASTER_DETECTOR_MODULE_HPP__
+#endif // __SEQUENTIAL_MASTER_MODULE_HPP__

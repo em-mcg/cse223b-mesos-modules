@@ -12,6 +12,8 @@
 
 #include "multi_master_contender_module.hpp"
 #include "multi_master_detector_module.hpp"
+#include "sequential_detector_module.hpp"
+#include "random_detector_module.hpp"
 #include "list_map.hpp"
 
 using namespace multimesos;
@@ -51,7 +53,7 @@ mesos::modules::Module<MasterDetector> org_apache_mesos_MultiMesosDetector(
       std::map<std::string, std::string> pMap = parseParameters(parameters);
       UrlListMap* urls = parseAddresses(pMap);
 
-      return new MultiMasterDetector(urls, false);
+      return new RandomMasterDetector(urls);
     });
 
 // create the master detector
@@ -66,7 +68,7 @@ mesos::modules::Module<MasterDetector> org_apache_mesos_FrameworkMultiMesosDetec
       std::map<std::string, std::string> pMap = parseParameters(parameters);
       UrlListMap* urls = parseAddresses(pMap);
 
-      return new MultiMasterDetector(urls, true);
+      return new SequentialMasterDetector(urls);
     });
 
 

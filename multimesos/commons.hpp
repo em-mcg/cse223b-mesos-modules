@@ -25,6 +25,8 @@ MasterInfo createMasterInfo(const UPID& pid);
 
 std::string URLtoString(process::http::URL url);
 
+void gen_random(char *s, const int len);
+
 } // namespace commons {
 
 } // namespace multimesos {
